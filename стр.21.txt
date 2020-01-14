@@ -1,0 +1,32 @@
+/**
+    ====== Алгоритмы: сортировки ======
+
+    1. Сортировка пузырьком
+
+    ```
+        function bubleSort(arr) {
+            const _length = arr.length;
+
+            for (let i = 0; i < _length; i++) {
+                
+                for (let j = i; j < (_length - 1); j++) {
+                    let item = arr[j],
+                        itemNext = arr[j+1];
+
+                    if (item > itemNext) {
+                        [arr[j], arr[j+1]] = [arr[j+1], arr[j]];
+                    }
+                } 
+            }
+
+            return arr;
+        }
+
+        const arr = [1,5,2,3,10,12,125,4,6,66,9];
+
+        console.log(bubleSort(arr));
+    ```
+
+    2. Сортировка слиянием
+
+*/
