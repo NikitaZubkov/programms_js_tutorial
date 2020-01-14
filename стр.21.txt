@@ -29,4 +29,73 @@
 
     2. Сортировка слиянием
 
+    ```
+        function mergeSort(arr) {
+            let _lenght = arr.length;
+
+            if (_lenght < 2) {
+                return arr;
+            }
+
+            let middle = Math.floor(_lenght/2),
+                left = arr.slice(0, middle),
+                right = arr.slice(middle);
+
+            return merge(mergeSort(left), mergeSort(right));
+        }
+
+        function merge(left, right) {
+            let result = [],
+                _lengthLeft = left.length,
+                _lengthRight = right.length,
+                leftCount = 0,
+                rightCount = 0;
+
+            while ((leftCount < _lengthLeft) && (rightCount < _lengthRight)) {
+                if (left[leftCount] < right[rightCount]) {
+                    result.push(left[leftCount]);
+                    leftCount++;
+                } else {
+                    result.push(right[rightCount]);
+                    rightCount++;
+                }
+            }
+
+            return result.concat(left.slice(leftCount)).concat(right.slice(rightCount));
+        }
+
+        var arr = [1, 126,5,4,73,12,42,3,66];
+
+        console.log(mergeSort(arr));
+    ```
+
+    3. !!!Сортировка выбором!!!
+
+    ```
+        function test(arr) {
+            let _length = arr.length,
+                minIndx;
+
+            for (let i = 0; i < _length; i++) {
+                minIndx = i;
+                console.log("====== Start " + i, arr[i]);
+
+                for (let j = i+1; j < _length; j++) {
+                    if (arr[j] < arr[minIndx]) {
+                        console.log("====== if " + j, arr[j], arr[minIndx]);
+
+                        minIndx = j;
+                    }
+                }
+
+                [arr[i], arr[minIndx]] = [arr[minIndx], arr[i]];
+            }
+
+            return arr;
+        }
+
+        var arr = [1, 126,5,4,73,12,42,3,66];
+
+        console.log(test(arr));    
+    ```
 */
