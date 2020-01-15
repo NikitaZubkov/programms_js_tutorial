@@ -69,10 +69,10 @@
         console.log(mergeSort(arr));
     ```
 
-    3. !!!Сортировка выбором!!!
+    3. Сортировка выбором
 
     ```
-        function test(arr) {
+        function chooseSort(arr) {
             let _length = arr.length,
                 minIndx;
 
@@ -96,6 +96,50 @@
 
         var arr = [1, 126,5,4,73,12,42,3,66];
 
-        console.log(test(arr));    
+        console.log(chooseSort(arr));    
+    ```
+
+    4. Быстрая Сортировка
+
+    ```
+        function quickSort(arr, left, right){
+            var len = arr.length, 
+                pivot,
+                partitionIndex;
+
+            if (left < right) {
+                pivot = right;
+                partitionIndex = partition(arr, pivot, left, right);
+                
+                //sort left and right
+                quickSort(arr, left, partitionIndex - 1);
+                quickSort(arr, partitionIndex + 1, right);
+            }
+            return arr;
+        }
+
+        function partition(arr, pivot, left, right) {
+            var pivotValue = arr[pivot],
+                partitionIndex = left;
+
+            for (var i = left; i < right; i++) {
+                if (arr[i] < pivotValue) {
+                    swap(arr, i, partitionIndex);
+                    partitionIndex++;
+                }
+            }
+            swap(arr, right, partitionIndex);
+            return partitionIndex;
+        }
+
+        function swap(arr, i, j) {
+            var temp = arr[i];
+            arr[i] = arr[j];
+            arr[j] = temp;
+        }
+
+        var arr = [1, 126,5,4,73,12,42,3,66];
+
+        console.log(quickSort(arr, 0, arr.length-1)); 
     ```
 */
