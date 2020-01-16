@@ -27,7 +27,34 @@
         console.log(bubleSort(arr));
     ```
 
-    2. Сортировка слиянием
+    2. Сортировка расчёской 
+
+    ```
+        function combSort(arr) {
+            const
+                l = arr.length,
+                factor = 1.247;
+
+            let gapFactor = l/factor;
+
+            while (gapFactor > 1) {
+                const gap = Math.round(gapFactor);
+                for (let i = 0, j = gap; j < l; i++, j++) {
+                    if (arr[i] > arr[j]) {
+                        [arr[i], arr[j]] = [arr[j], arr[i]];
+                    }
+                }
+                gapFactor = gapFactor / factor;
+            }
+            return arr;
+        };
+
+        var arr = [1, 126,5,4,73,12,42,3,66];
+
+        console.log(combSort(arr));
+    ```
+
+    3. Сортировка слиянием
 
     ```
         function mergeSort(arr) {
@@ -69,7 +96,7 @@
         console.log(mergeSort(arr));
     ```
 
-    3. Сортировка выбором
+    4. Сортировка выбором
 
     ```
         function chooseSort(arr) {
@@ -78,12 +105,9 @@
 
             for (let i = 0; i < _length; i++) {
                 minIndx = i;
-                console.log("====== Start " + i, arr[i]);
 
                 for (let j = i+1; j < _length; j++) {
                     if (arr[j] < arr[minIndx]) {
-                        console.log("====== if " + j, arr[j], arr[minIndx]);
-
                         minIndx = j;
                     }
                 }
@@ -99,12 +123,11 @@
         console.log(chooseSort(arr));    
     ```
 
-    4. Быстрая Сортировка
+    5. Быстрая Сортировка
 
     ```
         function quickSort(arr, left, right){
-            var len = arr.length, 
-                pivot,
+            let pivot,
                 partitionIndex;
 
             if (left < right) {
@@ -119,10 +142,10 @@
         }
 
         function partition(arr, pivot, left, right) {
-            var pivotValue = arr[pivot],
+            let pivotValue = arr[pivot],
                 partitionIndex = left;
 
-            for (var i = left; i < right; i++) {
+            for (let i = left; i < right; i++) {
                 if (arr[i] < pivotValue) {
                     swap(arr, i, partitionIndex);
                     partitionIndex++;
@@ -133,13 +156,43 @@
         }
 
         function swap(arr, i, j) {
-            var temp = arr[i];
-            arr[i] = arr[j];
-            arr[j] = temp;
+            [arr[i], arr[j]] = [arr[j], arr[i]];
         }
 
         var arr = [1, 126,5,4,73,12,42,3,66];
 
         console.log(quickSort(arr, 0, arr.length-1)); 
+    ```
+
+    6. Сортировка вставками
+
+    ```
+        function insertSort(arr) {
+            const _length = arr.length;
+
+            for (let i = 1; i < _length; i++) {
+                let item = arr[i],
+                    j = i;
+
+                while (j > 0 && arr[j-1] > item) {
+                    console.log(i, j, arr[j], arr[j-1])
+                    arr[j] = arr[j-1];
+                    j--;
+                }
+
+                arr[j] = item;
+            }
+
+            return arr;
+        }
+
+        var arr = [1,5,2,3,10,12,125,4,6,66,9];
+
+        console.log(insertSort(arr));
+    ```
+
+    7. Сортировка Шелла
+
+    ```
     ```
 */
