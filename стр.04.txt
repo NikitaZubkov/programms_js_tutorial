@@ -57,6 +57,12 @@
     - BigInt
     Их мы будем рассматривать в будущем
 
+    Более подробно про "типы данных 
+    https://habr.com/ru/post/240223/
+    https://fooobar.com/questions/3113/what-is-the-difference-between-null-and-undefined-in-javascript
+    https://javascript.ru/forum/misc/35121-null-i-undefined-v-chem-raznica-i-primenenie.html
+    "
+
     === Переменные.
     Для хранения данных используются так называемые переменные - это определённый адрес в памяти, в котором хранится наша информация. 
     Для доступа к этому адресу мы используем имя переменной, которое указывается при её создании.
@@ -151,6 +157,11 @@
     это особенность самого JS, точнее особенность определения типов данных, которая была намеренно внедрена в нём 
     ещё на этапе создания самого языка.
 
+    Более подробно про "typeof 
+    https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/typeof#null
+    https://blog.logrocket.com/javascript-typeof-2511d53a1a62/
+    https://medium.com/devschacht/javascript-typeof-43591ab15bef"
+
     === Работа с объектами и массивами. 
     Рассмотрим то, как работать с объектами, массивами и что у них общего со строками.
 
@@ -174,7 +185,7 @@
 
     /**
      * То же самое, что и a.test
-     * Однако толко через a["test-2"] можно получить доступ по ключ с например дефисом в имени 
+     * Однако только через a["test-2"] можно получить доступ по ключ с например дефисом в имени 
      */
     console.log(a["test-2"]);
     ```
@@ -332,7 +343,14 @@
     Почему мы получаем именно такие результаты?
     Дело в том, что в JS если мы производим какие либо операции, происходит "приведение типов":
     при умножении числа на null/boolean, происходит приведение к числу. Следовательно null/false приводятся к 0, а true - к 1.
-    Более подробно про приведение типов будет ниже этой главе.
+
+    Более подробно про "приведение типов 
+    https://learn.javascript.ru/type-conversions
+    https://developer.mozilla.org/ru/docs/Web/JavaScript/Guide/Expressions_and_Operators#%D0%9F%D1%80%D0%B8%D0%BE%D1%80%D0%B8%D1%82%D0%B5%D1%82_%D0%BE%D0%BF%D0%B5%D1%80%D0%B0%D1%82%D0%BE%D1%80%D0%BE%D0%B2
+    https://dev.to/promhize/what-you-need-to-know-about-javascripts-implicit-coercion-e23
+    https://medium.com/@frontman/%D0%BF%D1%80%D0%B8%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5-%D1%82%D0%B8%D0%BF%D0%BE%D0%B2-%D0%B2-js-9d6f1845ea96
+    https://medium.com/@frontman/%D0%BF%D1%80%D0%BE-%D0%BF%D1%80%D0%B8%D0%B2%D0%B5%D0%B4%D0%B5%D0%BD%D0%B8%D0%B5-%D1%82%D0%B8%D0%BF%D0%BE%D0%B2-%D0%B2-js-%D0%B8-%D0%BC%D0%B0%D0%B3%D0%B8%D1%8E-%D1%87%D0%B0%D1%81%D1%82%D1%8C-2-431726e72d38
+    "
 
     В случае с undefined любая арифметическая операция с числом приводит к NaN - ошибке математической операции.
 
@@ -408,7 +426,10 @@
     // Строгое неравенство значений, true
     console.log(a !== b);
     ```
-    Более подробно про "операции сравнения https://learn.javascript.ru/comparison"
+    Более подробно про "операции сравнения 
+    https://learn.javascript.ru/comparison
+    https://www.freecodecamp.org/news/explaining-the-best-javascript-meme-i-have-ever-seen/
+    "
 
     При сравнении объектов появляются отличия от сравнения примитивных типов данных:
 
@@ -431,7 +452,10 @@
         console.log(a === b);
     ```
 
-    Подробнее про "объекты, операции с ними https://learn.javascript.ru/object#kopirovanie-po-ssylke https://developer.mozilla.org/ru/docs/Web/JavaScript/Guide/Working_with_Objects"
+    Подробнее про "ссылки, объекты и операции с ними 
+    https://codeburst.io/explaining-value-vs-reference-in-javascript-647a975e12a0
+    https://learn.javascript.ru/object#kopirovanie-po-ssylke 
+    https://developer.mozilla.org/ru/docs/Web/JavaScript/Guide/Working_with_Objects"
 
     Если же мы хотим сравнить объекты с точки зрения содержащихся в них свойств, то тут появляются некоторые сложности:
     нам нужно сравнивать содержимое вне зависимости от того, в каком порядке прописаны свойства. Для решения подобных задач существуют уже 
@@ -660,11 +684,81 @@
 
     Более подробно про "операнды и унарные операции https://learn.javascript.ru/operators https://developer.mozilla.org/ru/docs/Web/JavaScript/Guide/Expressions_and_Operators#%D0%A3%D0%BD%D0%B0%D1%80%D0%BD%D1%8B%D0%B5_%D0%BE%D0%BF%D0%B5%D1%80%D0%B0%D1%82%D0%BE%D1%80%D1%8B".
 
-    !!!=== Неизменность примитивов
+    === Объекты обёртки
 
-    !!!=== Приведение типов
+    Допустим есть задача для выполнения которой нам нужно определять количество символов у массива и у строки.
+    У каждого массива и объекта есть много изначально доступных полей и так называемых методов - изначально доступных функций, 
+    которые можно вызывать для получения той или иной информации о массиве или объекте. 
+    Для получения количества символов в массиве можно использовать поле length:
 
-    Более подробно про приведение "типов https://learn.javascript.ru/type-conversions" и "приоретизацию при приведении типов https://developer.mozilla.org/ru/docs/Web/JavaScript/Guide/Expressions_and_Operators#%D0%9F%D1%80%D0%B8%D0%BE%D1%80%D0%B8%D1%82%D0%B5%D1%82_%D0%BE%D0%BF%D0%B5%D1%80%D0%B0%D1%82%D0%BE%D1%80%D0%BE%D0%B2"
+    ```
+        var arr = [1,2,3];
 
-    !!!=== Объекты обёртки
+        console.log(arr.length); // 3
+    ```
+
+    Если допустим нужно получить количество символов у строки, то можно сделать так:
+
+    ```
+        var str = "тестовая строка";
+
+        console.log(str.length); // 15
+    ```
+
+    Несмотря на то что примитивы не являются объектами и у них нет никаких свойств, мы можем вызывать 
+    некоторые методы и поля благодаря концепции объектов-обёрток.У каждого некоторых примитивов существует свой объект-обёртка, 
+    в который оборачивается примитив при попытке использовать какой-то метод или получить какое-то свойство.
+
+    В примере выше при str.length 
+    - временно создаётся специальный объект, в который оборачивается примитив
+    - возвращается значение поля length
+    - специальный объект удаляется
+
+    Существует три объекта обёртки для примитивов:
+    - Number для чисел
+    - String для строк
+    - Boolean для логического boolean
+
+    Работа с ними аналогична работе со String.
+
+    Более подробно про "объекты-обёртки 
+    https://developer.mozilla.org/ru/docs/%D0%A1%D0%BB%D0%BE%D0%B2%D0%B0%D1%80%D1%8C/Primitive#%D0%9E%D0%B1%D0%B5%D1%80%D1%82%D0%BA%D0%B8_%D0%BF%D1%80%D0%B8%D0%BC%D0%B8%D1%82%D0%B8%D0%B2%D0%BD%D1%8B%D1%85_%D1%82%D0%B8%D0%BF%D0%BE%D0%B2_%D0%B2_JavaScript
+    https://blog.mavenhive.in/primitives-vs-objects-in-javascript-1bd9fc0b8fcd
+    https://www.vojtechruzicka.com/javascript-primitives/
+    https://javascriptweblog.wordpress.com/2010/09/27/the-secret-life-of-javascript-primitives/
+    "
+
+    === Неизменность примитивов
+
+    Рассмотрим другую задачу, есть строка и нужно получить значение символа в определённом месте строки, а после заменить его на другой.
+    Чтобы получить отдельный символ, можно:
+
+    - использовать метод charAt
+
+    ```
+        var str = "тестовая строка";
+
+        console.log(str.charAt(3)); // т
+    ```
+
+    - рассмотреть строку как массиво-подобный объект, в котором символы имеют соответствующие числовые индексы:
+
+    ```
+        var str = "тестовая строка";
+
+        console.log(str[3]); // т
+    ```
+
+    Теперь нужно заменить его значение. Если попытаться сделать через "нотацию" с квадратными скобками:
+
+    ```
+        var str = "тестовая строка";
+
+        str[3] = 5;
+
+        console.log(str);
+    ```
+
+    то ничего не выйдет, т.к. примитивы в JS неизменны:
+    при любой попытке изменения примитива будет возвращаться новое значение, старое же не будет изменено.
 */

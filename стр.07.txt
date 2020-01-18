@@ -535,4 +535,6 @@
     console.log(j);
     console.log(k);
     ```
+
+    Более подробно про "область видимости и условия https://stackoverflow.com/questions/6964895/javascript-variable-scope-in-the-if-statement"
 */

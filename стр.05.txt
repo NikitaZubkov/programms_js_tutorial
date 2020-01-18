@@ -124,4 +124,6 @@
      */
     (typeof a === "string") ? console.log("Переменная a - строка") : console.log("Переменная a - " + (typeof a));
     ```
+
+    Более подробно про "тернарный оператор https://lucybain.com/blog/2014/js-ternary/"
 */
