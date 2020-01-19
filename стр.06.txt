@@ -131,6 +131,7 @@
     } while (i < 50);
     ```
 
+    !!!=== foreach, for...in, for...of!!!
     Также в JS есть методы по перебору массивов и объектов (пример forEach) и пр. циклы, похожие на for (например for...in).
     Более подробно про них можно прочитать "здесь 
     https://developer.mozilla.org/ru/docs/Web/JavaScript/Guide/%D0%A6%D0%B8%D0%BA%D0%BB%D1%8B_%D0%B8_%D0%B8%D1%82%D0%B5%D1%80%D0%B0%D1%86%D0%B8%D0%B8

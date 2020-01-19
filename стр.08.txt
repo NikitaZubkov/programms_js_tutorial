@@ -1,16 +1,289 @@
 /**
     ====== Объекты, контекст исполнения this ======
-   
-    - Объекты, всё кроме примитивов - объект, передача по ссылке, объекты первого класса
-    обход всех полей объекта
 
-    - Оператор delete
+    === Контекст
+    Рассмотрим задачу когда нам нужно сохранять и изменять данные внутри объекта.
+    Для этого можно у объекта создать методы, которые будут изменять те или иные поля:
 
-    - Способы создания объекта, способы задания полей
+    ```
+        const obj = {
+            a: null,
+            b: null,
+            changeA: function(variable) {
+                obj.a = variable;
+            },
+            changeB: function(variable) {
+                obj.b = variable;
+            }
+        };
 
-    - контекст исполнения this
+        obj.changeA(12);
+        obj.changeB(12);
 
-    - get, set
+        console.log(obj);
+    ```
+
+    Однако обращаться к имени объекта не лучший способ чтобы изменить значение поля.
+    Для этого можно использовать контекст функции this.
+
+    Контекст this - это объект, описывающий состояние функции в момент вызова this. Под состоянием имеется ввиду доступные поля, значения, сохранённые в функции.
+    Значение контекста зависит от того, где был вызван this. Есть три варианта вызова контекста: 
+    - вызов в глобальной области видимости
+    - вызов внутри метода объекта
+    - вызов внутри функции eval
+
+    Последний пункт не будет рассматриваться, т.к. он практически не встречается в коде.
+    Сама функция eval - это изначально доступная функция, которая выполняет код, переданный ей в виде строки:
+
+    ```
+        eval('console.log(1);');
+    ```
+
+    Более подробно про саму функцию "eval https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/eval"
+
+    === Вызов this внутри метода объекта
+    Если вызвать this внутри метода объекта, то в this будут доступны поля и другие
+    методы объекта:
+
+    ```
+        const obj = {
+            a: null,
+            b: null,
+            changeA: function(variable) {
+                obj.a = variable;
+            },
+            changeB: function(variable) {
+                obj.b = variable;
+            },
+            info: function() {
+                console.log(this);
+            }
+        };
+
+        console.log(obj.info());
+    ```
+
+    В этом случае мы можем избавиться от обращения к obj для задания полей:
+
+    ```
+        const obj = {
+            a: null,
+            b: null,
+            changeA: function(variable) {
+                this.a = variable;
+            },
+            changeB: function(variable) {
+                this.b = variable;
+            }
+        };
+
+        obj.changeA(12);
+        obj.changeB(12);
+
+        console.log(obj);
+    ```
+    
+    === Вызов глобального контекста
+    Если вызвать this в функции, которая находится в глобальной области видимости, то в this будет сохранён window:
+
+    ```
+        function test() {
+            console.log(this);
+            console.log(this === window);
+        }
+
+        test();
+    ```
+
+    В данном случае будет true именно потому что в this сохранена ссылка на глобальный объект.
+
+    Ссылки по this:
+    https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Operators/this
+    https://blog.bitsrc.io/understanding-execution-context-and-execution-stack-in-javascript-1c9ea8642dd0
+    https://habr.com/ru/post/464163/
+    https://medium.com/better-programming/understanding-the-this-keyword-in-javascript-cb76d4c7c5e8
+    https://medium.com/javascript-scene/what-is-this-the-inner-workings-of-javascript-objects-d397bfa0708a
+    https://getinstance.info/articles/javascript/execution-context/
+    https://stackoverflow.com/questions/9218292/what-is-the-difference-between-this-self-window-and-window-self
+    https://ponyfoo.com/articles/where-does-this-keyword-come-from
+
+    === Геттеры, сеттеры
+
+    В предыдущих примерах значения полей объекта изменялись при вызове методов changeA, changeB.
+    Есть другой способ модифицировать поля - использовать get/set. Это по сути обычные функции, которые видны в коде как обычные поля:
+
+    ```
+        const obj = {
+            _a: null,
+            get a() {
+                return this._a;
+            },
+
+            set a(variable) {
+                this._a = variable + '12';
+            }
+        };
+
+        obj.a = 12;
+
+        console.log(obj);
+    ```
+
+    Более подробно про "get/set 
+    https://learn.javascript.ru/property-accessors
+    https://dev.to/ogwurujohnson/getters-and-setters-used-in-javascript-objectshow-4jef"
+
+    !!!=== Дескрипторы свойств!!!
+    
+    Ранее были рассмотрены get/set у объекта. Они являются частью объектов и входят в группу так называемых "Дескрипторы свойств".
+    Дескрипторы свойств можно описать как свойства свойств, т.е. они определяют поведение и взаимодействие с каждым свойством.
+    Сами по себе они являются объектами.
+
+    В JS есть два типа дескрипторов свойств:
+    - Дескриптор данных: они определяют значение, возможность чтения и записи свойств
+    - Дескриптор доступа: выше упомянутые get/set
+
+    Важно: одно свойство не может быть описано сразу двумя дескрипторами: либо дескриптор данных, либо доступа.
+    Задаются эти дескрипторы через метод defineProperty.
+
+    Пример для дескриптора доступа:
+
+    ```
+        const obj = {
+            a: 12,
+            b: 13
+        };
+
+        Object.defineProperty(obj, 'b', {
+            get: function() { return bValue; },
+            set: function(newValue) { bValue = newValue; },
+            enumerable: true,
+            configurable: true
+        });
+
+        obj.b = 13;
+
+        console.log(obj);
+        console.log(obj.b);
+    ```
+
+    Здесь
+        - enumerable отвечает за то, будет ли свойство перечисляемым (т.е. будет ли оно выводиться при for...in), по умолчанию false
+        - configurable отвечает за то, можно ли свойство удалить через специальный оператор delete (подробно про него ниже)
+
+    В случае задания свойства b через defineProperty оно также будет доступно при прямом вызове, однако при простом выводе объекта оно не будет
+    отображаться в консоли.
+
+    Если поле изначально существовало, оно модифицируется согласно прописанным дескрипторам свойств.
+
+    Пример для дескрипторы данных:
+
+    ```
+        const obj = {
+            a: 12,
+            b: 13
+        };
+
+        Object.defineProperty(obj, 'b', {
+            get: function() { return bValue; },
+            set: function(newValue) { bValue = newValue; },
+            enumerable: true,
+            configurable: true
+        });
+
+        obj.b = 13;
+
+        console.log(obj);
+        console.log(obj.b);
+    ```
+
+    https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty
+
+    === Оператор delete
+    Для удаления свойств в объекте используется специальный оператор delete:
+
+    ```
+        const obj = {
+            a: 12
+        };
+
+        delete obj.a;
+
+        console.log(obj);
+    ```
+
+    При работе с ним есть несколько важных моментов. 
+    Во-первых, он не может удалить глобальные переменные:
+
+    ```
+        var a = 12;
+
+        delete window.a;
+
+        console.log(window.a);
+    ```
+
+    Впрочем как и другие переменные, объявленные через let, const, т.к. delete удаляет только конфигурируемые свойства, 
+    т.е. те, что были прописали например через объектный литерал {}:
+
+    ```
+        const obj = {
+            d: 12
+        };
+
+        Object.defineProperty(obj, 'd', { configurable: false });
+
+        delete obj.d
+
+        console.log(obj);   // свойство не удалилось из-за свойства configurable:false
+    ```
+
+    Во-вторых, delete не удаляет примитивные значения. Он работает только с объектами:
+
+    ```
+        const a = 12;
+
+        delete a;
+
+        console.log(a)
+    ```
+
+    В-третьих, использование delete с массивами не лучшая идея, т.к. свойство length не будет уменьшено, а в логах на месте элемента будет empty:
+    
+    ```
+        const a = [1,2,3];
+
+        delete a[0];
+
+        console.log(a); 
+    ```
+
+    Для удаления элемента в массиве используются определённые методы, о которых будет в главе Массивы.
+
+    В четвёртых, значение, возвращаемое delete:
+    - если поле удалено успешно или не найдено, то вернётся true
+    - если поле нельзя удалить, то вернётся false
+
+    ```
+        const 
+            a = 12, 
+            b = {
+                c: 13,
+                d: 14
+            };
+
+        Object.defineProperty(b, 'd', { configurable: false });
+
+        console.log(delete a);      // false
+        console.log(delete b.c);    // true
+        console.log(delete b.d);    // false
+    ```
+
+    Более подробно про delete можно прочитать "здесь
+    https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Operators/delete
+    https://medium.com/better-programming/javascript-delete-keyword-in-detail-4bdcf32dcdd8
+    https://blog.bitsrc.io/understanding-the-delete-operator-in-javascript-3791ba6f3a08
+    "
 
     - new, прототипы
 */

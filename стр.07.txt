@@ -329,6 +329,18 @@
 
     const b; // ошибка, требуется инициализация переменной
     ```
+
+    Однако при работе с объектом у const есть особенность: мы также не можем заново инициализировать переменную. Однако можно добавлять или 
+    удалять поля у объектов:
+
+    ```
+        const obj = {};
+
+        obj.a = 12;
+
+        console.log(obj);
+    ```
+
     let и const появились в JS не сразу: впервые они были добавлены в js после появления ES6: там было описано много фич, в том числе и let с const.
     Добавлены они были для повышения безопасности при кода.
 
@@ -428,6 +440,7 @@
 
     Более подробно про эту особенность "здесь 
     https://codeburst.io/difference-between-let-and-var-in-javascript-537410b2d707 
+    https://2ality.com/2019/07/global-scope.html
     https://stackoverflow.com/questions/39414692/a-javascript-let-global-variable-is-not-a-property-of-window-unlike-a-global
     https://stackoverflow.com/questions/28776079/do-let-statements-create-properties-on-the-global-object
     "
