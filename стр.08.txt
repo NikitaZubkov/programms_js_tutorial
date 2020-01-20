@@ -133,7 +133,7 @@
     https://learn.javascript.ru/property-accessors
     https://dev.to/ogwurujohnson/getters-and-setters-used-in-javascript-objectshow-4jef"
 
-    !!!=== Дескрипторы свойств!!!
+    === Дескрипторы свойств
     
     Ранее были рассмотрены get/set у объекта. Они являются частью объектов и входят в группу так называемых "Дескрипторы свойств".
     Дескрипторы свойств можно описать как свойства свойств, т.е. они определяют поведение и взаимодействие с каждым свойством.
@@ -149,10 +149,17 @@
     Пример для дескриптора доступа:
 
     ```
-        const obj = {
-            a: 12,
-            b: 13
-        };
+        const 
+            obj = {
+                a: 12,
+                b: 13
+            },
+            descriptor = {
+                get: function() { return cValue; },
+                set: function(newValue) { cValue = newValue + 13; },
+                enumerable: true,
+                configurable: true
+            }
 
         Object.defineProperty(obj, 'b', {
             get: function() { return bValue; },
@@ -161,15 +168,22 @@
             configurable: true
         });
 
+        Object.defineProperty(obj, 'c', descriptor);
+
         obj.b = 13;
+        obj.c = 13;
 
         console.log(obj);
         console.log(obj.b);
+        console.log(obj.c);
     ```
 
     Здесь
         - enumerable отвечает за то, будет ли свойство перечисляемым (т.е. будет ли оно выводиться при for...in), по умолчанию false
-        - configurable отвечает за то, можно ли свойство удалить через специальный оператор delete (подробно про него ниже)
+        - configurable отвечает за то, можно ли свойство удалить через специальный оператор delete (подробно про него ниже),
+        по умолчанию значение false
+
+    Т.к. дескрипторы это объекты, то их можно хранить в переменной и использовать в defineProperty в качестве аргумента. 
 
     В случае задания свойства b через defineProperty оно также будет доступно при прямом вызове, однако при простом выводе объекта оно не будет
     отображаться в консоли.
@@ -179,25 +193,28 @@
     Пример для дескрипторы данных:
 
     ```
-        const obj = {
-            a: 12,
-            b: 13
-        };
+        const obj = {};
 
-        Object.defineProperty(obj, 'b', {
-            get: function() { return bValue; },
-            set: function(newValue) { bValue = newValue; },
-            enumerable: true,
-            configurable: true
+        Object.defineProperty(obj, 'a', {
+            enumerable: false,
+            configurable: false,
+            writable: false,
+            value: 'static'
         });
 
-        obj.b = 13;
+        obj.a = 13;
 
         console.log(obj);
-        console.log(obj.b);
+        console.log(obj.a);
     ```
+    Здесь
+        - value: непосредственное значение поля, по умолчанию undefined
+        - writable: статус который показывает, можно ли изменять поле, по умолчанию false 
 
+    Более подробно про дескрипторы "свойств 
     https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty
+    https://learn.javascript.ru/property-descriptors
+    https://habr.com/ru/company/ruvds/blog/438794/".
 
     === Оператор delete
     Для удаления свойств в объекте используется специальный оператор delete:
@@ -285,5 +302,18 @@
     https://blog.bitsrc.io/understanding-the-delete-operator-in-javascript-3791ba6f3a08
     "
 
-    - new, прототипы
+    - Прототипы, прототипное наследование
+
+    - Создание объекта, Объект Object, модифицирование объекта, методы tostring tovalue, частный случай {}+{} и []+[]
+
+    https://thedevs.network/blog/type-coercion-in-javascript-and-why-everyone-gets-it-wrong
+
+    - Изменчивать, клонирование объектов
+
+    Более подробно про изменчивость "объектов https://2ality.com/2019/10/shared-mutable-state.html"
+
+
+    https://habr.com/ru/post/240813/
+    https://habr.com/ru/post/241587/
+    https://habr.com/ru/company/ruvds/blog/420615/
 */
