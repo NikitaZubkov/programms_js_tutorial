@@ -443,6 +443,7 @@
     https://2ality.com/2019/07/global-scope.html
     https://stackoverflow.com/questions/39414692/a-javascript-let-global-variable-is-not-a-property-of-window-unlike-a-global
     https://stackoverflow.com/questions/28776079/do-let-statements-create-properties-on-the-global-object
+    https://fooobar.com/questions/504047/whats-the-difference-between-lexicalenvironment-and-variableenvironment-in-spec
     "
 
     === Поднятие переменной и функции
