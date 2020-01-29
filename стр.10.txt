@@ -1,4 +1,8 @@
 /**
     ====== Массивы ======
 
+    http://thecodebarbarian.com/for-vs-for-each-vs-for-in-vs-for-of-in-javascript.html
+    https://fooobar.com/questions/355330/difference-between-foreach-and-for-loop-in-javascript
+    https://stackoverflow.com/questions/31399411/go-to-next-iteration-in-javascript-foreach-loop"
+
 */

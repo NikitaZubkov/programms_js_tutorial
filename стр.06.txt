@@ -131,11 +131,41 @@
     } while (i < 50);
     ```
 
-    !!!=== foreach, for...in, for...of!!!
     Также в JS есть методы по перебору массивов и объектов (пример forEach) и пр. циклы, похожие на for (например for...in).
-    Более подробно про них можно прочитать "здесь 
+    Они будут рассмотрены в следующих главах про объекты и массивы.
+
+    Более подробно про циклы можно прочитать "здесь
     https://developer.mozilla.org/ru/docs/Web/JavaScript/Guide/%D0%A6%D0%B8%D0%BA%D0%BB%D1%8B_%D0%B8_%D0%B8%D1%82%D0%B5%D1%80%D0%B0%D1%86%D0%B8%D0%B8
-    http://thecodebarbarian.com/for-vs-for-each-vs-for-in-vs-for-of-in-javascript.html
-    https://fooobar.com/questions/355330/difference-between-foreach-and-for-loop-in-javascript
-    https://stackoverflow.com/questions/31399411/go-to-next-iteration-in-javascript-foreach-loop"
+    "
+
+    === Метки для break/continue
+
+    Представим задачу: есть несколько вложенных циклов for и в определённый момент нужно выйти ио во всех циклов.
+    Чтобы не продумывать пути выхода из циклов можно использовать так называемые метки. 
+    Метка состоит из указателя с двоеточием перед началом цикла. 
+    Если для break или coninue указать идентификатор этой метки, то он перейдёт ровно к её началу:
+
+    ```
+        console.log('start for');
+
+        test: for (var i = 0; i < 10; i++) {            
+            for (var j = 0; j < 2; j++) {
+                console.log(i, j);
+
+                if (i === 5) {
+                    break test;
+                }
+            }
+        }
+
+        console.log('end for');
+    ```
+
+    Более подробно про метки можно прочитать "здесь 
+    https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Statements/label
+    https://learn.javascript.ru/while-for#metki-dlya-break-continue
+    https://puzzleweb.ru/javascript/11_loops3.php
+    "
+
+
 */

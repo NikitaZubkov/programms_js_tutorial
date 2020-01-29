@@ -1,7 +1,7 @@
 /**
-    ====== Объекты, контекст исполнения this ======
+    ====== Объекты, прототипы, контекст исполнения this ======
 
-    === Прототипы, прототипное наследование, конструкторы функций
+    === Прототипы, прототипное наследование
 
     Представим что есть задача создать множество объектов, которые будут между собой отличаться, при этом иметь повторяющиеся методы.
     Будем сохранять объекты в массиве и обращаться к ним из массива:
@@ -52,6 +52,8 @@
 
         console.log(obj.__proto__, arr.__proto__);
     ```
+
+    Более подробно про прототипы и прототипное наследование будет в главе с функциями.
 
     Ранее при изучении типов данных были рассмотрены не все способы создания объекта.
     Кроме объектного литерала {} и new Object существует вариант Object.create. В этом случае можно указать объект прототип, 
@@ -105,7 +107,7 @@
     Особенность Object.create является то, что для работы этой фичи в старых браузерах требуется полифилл - кусок js кода, который описывает
     функционал той или иной фичи.
 
-    Подробнее про "объекты, Object.create и прототипное наследование
+    Подробнее про "объекты, Object.create здесь
         https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Object/create
         https://www.youtube.com/watch?v=0vs6WkNyzec&t=5s
         https://habr.com/ru/company/ruvds/blog/420615/
@@ -618,4 +620,141 @@
     "
 
     === Перебор объекта, особенность for...in
-*/
+
+    Для перебора объекта можно использовать два способа:
+    - получить все в поля через Object.keys() и через цикл пройти по всем полям
+    - использовать for...in
+
+    1. Перебор объекта с помощью Object.keys()
+    В случае с Object.keys() передаётся объект, а возвращается массив со всеми полями:
+
+    ```
+        const 
+            obj = {
+                a: 12,
+                b: 13
+            },
+            keys = Object.keys(obj),
+            countKeysObject = keys.length;
+
+        for (let i = 0; i < countKeysObject; i++) {
+            let itemKeys = keys[i],
+                itemObj = obj[itemKeys];
+
+            console.log(itemKeys, itemObj);
+        }
+    ```
+
+    В более сокращённом варианте можно использовать метод для обхода цикла forEach:
+
+    ```
+        const 
+            obj = {
+                a: 12,
+                b: 13
+            };
+            
+        Object.keys(obj).forEach(function(key) {
+            console.log(key, this[key]);
+        }, obj);
+    ```
+
+    Здесь первым аргументом является так называемый callback - функция, которая будет вызываться при каждой итерации.
+    Второй аргумент это значение (чаще всего объект), который будет использоваться в качестве this.
+    
+    В данном случае в качестве this будет выступать объект obj.
+
+    Более подробно про Object.keys можно прочитать "здесь
+    https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Object/keys
+    https://ru.stackoverflow.com/questions/574461/%D0%9A%D0%B0%D0%BA-%D0%BF%D0%B5%D1%80%D0%B5%D0%B1%D1%80%D0%B0%D1%82%D1%8C-%D1%8D%D0%BB%D0%B5%D0%BC%D0%B5%D0%BD%D1%82%D1%8B-%D0%BE%D0%B1%D1%8A%D0%B5%D0%BA%D1%82%D0%B0
+    "
+
+    2. Перебор объекта с помощью for...in
+    Здесь гораздо проще, т.к. for...in по синтаксису похож на обычный for:
+
+    ```
+        const 
+            obj = {
+                a: 12,
+                b: 13
+            };
+
+        for (let key in obj) {
+            let valObj = obj[key];
+
+            console.log(key, valObj);
+        }
+    ```
+
+    Однако у for...in есть особенность при переборе свойств: он перебирает не только свойства у самого объекта, но и поля у 
+    объекта-прототипа:
+
+    ```
+        const 
+            objParent = {
+                a: 12,
+                b: 13
+            },
+            newObj = Object.create(objParent);
+
+        newObj.c = 12;
+
+        for (let key in newObj) {
+            let valObj = newObj[key];
+
+            console.log(key, valObj);
+        }
+    ```
+
+    Чтобы перебрать свойства объекта, а не его прототипа, нужно изначально доступный метод hasOwnProperty:
+
+    ```
+        const 
+            objParent = {
+                a: 12,
+                b: 13
+            },
+            newObj = Object.create(objParent);
+
+        newObj.c = 12;
+
+        for (let key in newObj) {
+            if (newObj.hasOwnProperty(key)) {
+                let valObj = newObj[key];
+
+                console.log(key, valObj);
+            }
+        }
+    ```
+
+    Однако может быть так, что в этом объекте уже есть метод hasOwnProperty и в этом случае именно он будет вызываться.
+    Чтобы не было подобного, нужно вызывать метод через свойство prototype у конструктора Object:
+
+    ```
+        const 
+            objParent = {
+                a: 12,
+                b: 13
+            },
+            newObj = Object.create(objParent);
+
+        newObj.c = 12;
+
+        for (let key in newObj) {
+            if (Object.prototype.hasOwnProperty.call(newObj, key)) {
+                let valObj = newObj[key];
+
+                console.log(key, valObj);
+            }
+        }
+    ```
+
+    Подробнее про call будет рассказано в следующей главе про функции. Но забегая вперёд, call позволяет вызвать функцию
+    с новым контекстом, который передаётся в качестве первого аргумента. В нашем случае this является новый объект newObj
+    и идёт проверка, есть ли поле key в контексте newObj.
+
+    Более подробно про "for...in
+    https://learn.javascript.ru/object#tsikl-for-in
+    https://eslint.org/docs/rules/guard-for-in
+    "
+ */
