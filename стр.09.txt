@@ -39,9 +39,54 @@
     https://developer.mozilla.org/ru/docs/%D0%A1%D0%BB%D0%BE%D0%B2%D0%B0%D1%80%D1%8C/First-class_Function
     https://medium.com/launch-school/javascript-weekly-an-introduction-to-first-class-functions-9d069e6fb137
     https://medium.com/webbdev/func-1afa4a8220a7
+    https://habr.com/ru/post/241155/
+    https://nick.scialli.me/first-class-functions-in-javascript/
+    https://habr.com/ru/post/261723/
     "
 
-    === Классификация функций, способы создания функций
+    === arguments
+
+    Перед тем как подробно рассказать про классификацию функций, стоит упомянуть arguments.
+    arguments - это "псевдомассив", доступный в любой функции и ссылающийся на переданные в функцию аргументы 
+    (т.е. он не хранит в себе не аргументы, а ссылки на эти аргументы ):
+    
+    ```
+        function test(a) {
+            console.log(arguments);
+
+            arguments[0] = 444;
+            console.log(a);
+            
+            a = 742;
+            console.log(arguments[0]);
+        }
+
+        test(12, 42);
+    ```
+
+    При этом можно получить доступ даже к тем аргументам, что не сохранены в переменных в ().
+    Псевдомассивом arguments называется потому, что значительная часть полей и методов для него не доступна.
+
+    Также в arguments хранится информация по вызываемой функции, например её имя или количество переданных аргументов:
+    ```
+        function test(a, b, c) {
+            // arguments.callee - ссылка на саму функцию
+            console.log(arguments.callee.name);
+            console.log(arguments.callee.length);
+        }
+
+        test(12, 42, 36, 13);
+    ```
+
+    Более подробно про arguments можно прочитать "здесь
+    https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Functions/arguments
+    https://learn.javascript.ru/arguments-pseudoarray
+    https://habr.com/ru/post/117868/
+    http://jsraccoon.ru/es6-spread-rest
+    https://stackoverflow.com/questions/960866/how-can-i-convert-the-arguments-object-to-an-array-in-javascript
+    "
+
+    === Классификация функций, рукурсивные функции, IIFE
 
     Функции можно разделить на два типа:
     - анонимные функции, у которых отсутствуют имена 
@@ -92,6 +137,7 @@
     8. в лог выводится 24
 
     Более подробно про рекурсивные функции можно прочитать "здесь
+    https://developer.mozilla.org/ru/docs/Web/JavaScript/Guide/Functions#Scope_%D0%B8_%D1%81%D1%82%D0%B5%D0%BA_%D1%84%D1%83%D0%BD%D0%BA%D1%86%D0%B8%D0%B8
     https://learn.javascript.ru/recursion
     https://code.tutsplus.com/ru/tutorials/understanding-recursion-with-javascript--cms-30346
     https://habr.com/ru/post/337030/
@@ -125,11 +171,12 @@
 
     Более подробно про "IIFE 
     https://getinstance.info/articles/javascript/immediately-invoked-function-expressions/
+    https://medium.com/@vvkchandra/essential-javascript-mastering-immediately-invoked-function-expressions-67791338ddc6
     "
 
-    3. Стрелочные функции
+    === Стрелочные функции
 
-    Стрелочными называют анонимные функции с сокращённым синтаксисом:
+    Стрелочными (arrow function) называют анонимные функции с сокращённым синтаксисом:
 
     ```
         /**
@@ -149,30 +196,422 @@
         const func = a => a + 12;
     ```
 
-    У этих функций есть две главные особенности.
+    Эти функции впервые появились в ES6, на сегодняшний день большинство браузеров поддерживают эти функции.
+    У стрелочных функций есть две главные особенности:
 
     1) Особенность this
     
+    При вызове this в обычной функции, которая является методом в объекте, this будет ссылаться на этот объект.
+    Если же this вызвать при тех же условиях в стрелочной функции, то он будет ссылаться на окружающий объект контекст:
 
-    4. 
+    ```
+        const a = {
+            test1: function() {
+                console.log(this);
+            },
 
+            /**
+             * Необязательно оборачивать код в {}
+             * Например в данном случае можно обойтись без {}
+             */
+            test2: () => console.log(this)
+        };
 
+        a.test1();  // Ссылается на объект a
+        a.test2();  // Ссылается на window
+    ```
 
-   - способы создания функций, arguments
+    Это является одним из плюсов стрелочных функций при работе с так называемыми конструкторами. 
+    Более подробно про них и про использование внутри них стрелочных функций будет ниже.
 
-   - объяснение конструктора
+    2) Особенность arguments
+    
+    У стрелочных функций нет псевдомассива arguments:
+    
+    ```
+        const a = (a) => {
+            /**
+             * Если в лог просто выводить arguments, то будет ошибка, что данной переменной не существует
+             * Чтобы избежать возможной ошибки при выведении переменной в log, можно использовать оператор typeof
+             */
+            console.log(typeof arguments);
+        };
 
-   - замыкания
-   
-   - callback
+        a(12);
+    ```
 
-   - call, apply, bind
+    Т.к. стрелочные функции анонимные, при возникновении в них ошибки, в логе будет указано, что ошибка возникла в <anonymous>,
+    т.е. в анонимной функции:
+
+    ```
+        /**
+         * Напишем самовызывающуюся стрелочную функцию и вызовем необъявленную переменную
+         * Выведется лог с ошибкой, что переменной не существует с указанием строки, где возникла ошибка
+         */
+        (() => {
+            console.log(b)
+        })();
+    ```
+
+    Чтобы в логе была более подробная информация, можно сохранить функцию в переменную. В этом случае в логе будет также
+    и имя этой переменной:
+
+    ```
+        const testArrow = () => console.log(b);
+
+        testArrow();
+    ```
+
+    По возможности лучше сохранять функции в переменные для более подробных логов.
+    Также есть особенность с return объекта при сокращённой записи:
+
+    ```
+        const
+            // Длинная запись с возвратом объекта
+            testArrow = () => {
+                return {
+                    a: 12
+                }
+            },
+
+            // Эта запись приведёт к синтаксический ошибке
+            //testArrow2 = () => { a: 12 }
+
+            // Синтаксически правильный способ вернуть объект в короткой записи arrow function
+            testArrow3 = () => ({ a: 12 }),
+
+            // Также эта запись верна при нескольких полях в объекте
+            testArrow4 = () => ({ 
+                a: 12,
+                b: 14
+            });
+
+        console.log(testArrow());
+        console.log(testArrow3());
+        console.log(testArrow4());
+    ``` 
+
+    Более подробно про "стрелочные функции
+    https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Functions/Arrow_functions
+    https://learn.javascript.ru/function-expressions
+    https://habr.com/ru/post/268795/
+    https://habr.com/ru/company/ruvds/blog/428566/
+    https://dmitripavlutin.com/javascript-arrow-functions-best-practices/
+    https://zendev.com/2018/10/01/javascript-arrow-functions-how-why-when.html
+    https://www.sitepoint.com/es6-arrow-functions-new-fat-concise-syntax-javascript/
+    "
+
+    === Функции-конструкторы, prototype, базовые конструкторы
+
+    В главе с объектами при объяснении прототипного наследования использовался пример с созданием множества однотипных объектов, 
+    которые наследуются от одного базового:
+
+    ```
+        const 
+            objBase = {
+                test: function() {
+                    // Код метода
+                }
+            },
+            arr = [],
+            N = 10000;
+
+        for(let i = 0; i < N; i++) {
+            const obj = Object.create(objBase);
+
+            // ...
+
+            arr.push(obj);
+        }
+
+        console.log(arr);
+    ```
+
+    Эту задачу можно решить другим способом, используя так называемые функции-конструкторы.
+    Функции конструкторы это самые обычные функции которые используются для генерации новых объектов, 
+    так называемых "экземпляров объектов" (instance). Создаются новые экземпляры при использовании ключевого слова new:
+
+    ```
+        function Test(a, b) {
+            this.c = a;
+            this.d = b;
+        }
+
+        function Test2() {}
+
+        const 
+            test = new Test(1, 12),
+            test2 = new Test2;  // При создании экземпляра объекта () не обязательны
+
+        console.dir(Test);
+        console.log(test);
+    ```
+
+    Рассмотрим подробнее, что находится в логах экземпляра объекта и функции-конструктора.
+
+    В логе функции Test обратим внимание на поле prototype, это поле не тоже самое, что и __proto__.
+    prototype есть у каждой функции и по умолчанию в prototype хранится обычный объект с полем __proto__ , указывающим на конструктор Object, 
+    и полем constructor, в котором находится ссылка на саму функцию.
+
+    Поле prototype нужно при создании экземпляра объекта: в экземпляре объекта в __proto__ будет то, что находится protorype у функции конструктора.
+
+    ```
+        // Вывод prototype у функции Test
+        console.log(Test.prototype);
+
+        // Вывод __proto__ у экземпляра объекта test
+        console.log(Test.prototype);
+
+        // Сравнение ссылок на объекты у экземпляра и конструктора
+        console.log(test.__proto__ === Test.prototype);
+    ```
+
+    Таким образом, конструкторы можно многократно использовать при генерации новых объектов. Однако появляется вопрос, как хранить методы будущих 
+    экземпляров. Создавать и хранить их в теле функции конструктора крайне не удобно, т.к. методов может быть неограниченное количество, а 
+    сами они могут содержать множество строчек кода.
+    Для решения этой проблемы можно также использовать prototype, достаточно добавить в него наши будщие методы:
+
+    ```
+        function Test(a, b) {
+            this.c = a;
+            this.d = b;
+        }
+
+        Test.prototype.testMethod1 = function() {
+            console.log(this.c, this.d);
+        }
+
+        /** 
+         * При добавлении методов в prototype важно использовать обычные функции, а не стрелочные.
+         * В данном случае this будет указывать не на экземпляр объекта, а на window
+         */
+        Test.prototype.testMethod2 = () => console.log(this.c, this.d)
+
+        const test = new Test(1, 12)
+
+        test.testMethod1();
+        test.testMethod2();
+    ```
+
+    Теперь зная про конструкторы и prototype, можно переписать исходное задание с генерацией уникальных объектов:
+
+    ```
+        const 
+            arr = [],
+            N = 10000;
+
+        function constructorFunction() {}
+
+        constructorFunction.prototype.test = function() {
+            // Код метода
+        };
+
+        for(let i = 0; i < N; i++) {
+            const obj = new constructorFunction;
+
+            // ...
+
+            arr.push(obj);
+        }
+
+        console.log(arr);
+    ```
+
+    Теперь в массив добавлено N уникальных объектов с методами, ссылающимися на эти же методы в prototype функции constructorFunction.
+    Однако если в constructorFunction добавить через this переменные, то они будут уникальными для каждого объекта, в отличие от методов.
+
+    Здесь кроется основное отличие Object.create и функцией-конструктором. 
+    В функции-конструкторе через this указываются поля, которые будут уникальными у каждого созданного экземпляра.
+    При работе с Object.create каждому созданному объекту нужно добавлять свойство после создания. Если это свойство указать в 
+    объекте-прототипе, оно будет общим для всех созданных объектов.
+
+    Если же говорить про Object, Array, Function - то это одни из базовых встроенных конструкторов, которые используются 
+    при создании любого объекта, массива или функции. 
+
+    При использовании литеральной нотации в __proto__ помещается то, что находится в prototype функции конструктора Object.
+    Аналогично с функцией и массивом.
+
+    Более подробно про конструкторы, prototype можно прочитать "здесь
+    https://www.youtube.com/watch?v=0vs6WkNyzec&t=567s
+    https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Operators/new
+    https://ru.stackoverflow.com/questions/446358/%D0%A7%D1%82%D0%BE-%D1%82%D0%B0%D0%BA%D0%BE%D0%B5-constructor-%D0%B2-javascript-%D0%B8-%D0%B4%D0%BB%D1%8F-%D1%87%D0%B5%D0%B3%D0%BE-%D0%BE%D0%BD-%D0%BF%D0%BE%D0%BB%D0%B5%D0%B7%D0%B5%D0%BD/446364
+    https://stackoverflow.com/questions/31973587/javascript-prototype-changes-not-showing-in-instance
+    https://medium.com/better-programming/prototypes-in-javascript-5bba2990e04b
+    https://www.codementor.io/@jsmentor/how-does-javascript-prototype-inheritance-work-du107lnk7
+    https://css-tricks.com/understanding-javascript-constructors/
+    https://habr.com/ru/post/17613/
+    https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Object/proto
+    https://habr.com/ru/post/140810/
+    https://developer.mozilla.org/ru/docs/Web/JavaScript/Inheritance_and_the_prototype_chain
+    https://developer.mozilla.org/ru/docs/Web/JavaScript/Guide/Details_of_the_Object_Model#%D0%AF%D0%B7%D1%8B%D0%BA%D0%B8_%D0%BE%D1%81%D0%BD%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D0%B5_%D0%BD%D0%B0_%D0%BA%D0%BB%D0%B0%D1%81%D1%81%D0%B0%D1%85_%D0%BF%D1%80%D0%BE%D1%82%D0%B8%D0%B2_%D0%9F%D1%80%D0%BE%D1%82%D0%BE%D1%82%D0%B8%D0%BF%D0%BD%D0%BE-%D0%BE%D1%80%D0%B8%D0%B5%D0%BD%D1%82%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%BD%D1%8B%D1%85_%D1%8F%D0%B7%D1%8B%D0%BA%D0%BE%D0%B2
+    https://stackoverflow.com/questions/4166616/understanding-the-difference-between-object-create-and-new-somefunction
+    "
+
+    === new Function
+
+    Стоит кратко упомянуть про про создание функций не через function, а через new Function.
+
+    В этом случае синтаксис следующий:
+
+    ```
+        function a(test) {
+            console.log(test);
+        }
+
+        const b = new Function('test', 'console.log(test)');
+
+        console.dir(a);
+        console.dir(b);
+    ```
+
+    Кроче очевидного неудобства при написании сложных функций есть одно важное отличие: новая функция является анонимной. 
+    Поэтому функцию нужно сохранять в переменную, чтобы в дальнейшем с ней работать.
+
+    Используется это крайне редко и в обычных задачах такой способ создания функций не рекомендуется.
+
+    Более подробно про "new Function
+    https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Functions
+    https://learn.javascript.ru/new-function
+    https://dmitripavlutin.com/6-ways-to-declare-javascript-functions/
+    https://stackoverflow.com/questions/15128697/difference-between-function-and-new-function
+    "
+
+    === Замыкания
+
+    Вспомним главу с объяснением областей видимости, с let/const и их отличиями от var. 
+    Тогда в качестве примера работы с областями видимости рассматривалась функция с глобальной локальной переменной:
+
+    ```
+        const a = 1;
+
+        function test() {
+            const a = 12;
+
+            console.log(a);
+        }
+
+        test();
+    ```
+
+    В данном случае выводится 12, т.к. в функции создана новая переменная a, которая находится в локальной области видимости функции.
+    Далее в лог выводится переменная a, объявленная в функции test. Если бы переменная a не была бы объявлена в функции, то:
+    - сначала данная переменная искалась бы в test
+    - переменная не найдена, эта переменная ищется в области видимости выше. В данном случае в глобальной области видимости
+    - переменная находится и её значение выводится в console.log. Если бы и там переменной не было, то в логе был undefined
+
+    На этой особенности областей видимости строится механизм замыканий. 
+    Рассмотрим базовый пример на тему замыканий - создание счётчика. 
+    Нужно создать функцию счётчик, не привязанную к какой либо глобальной переменной. При этом нужно чтобы каждый созданный счётчик был 
+    независимым от других, т.е.:
+
+    ```
+        function counter(variable) {
+            ...
+        }
+
+        let a = counter(12),
+            b = counter(44);
+
+        a(); // 13
+        a(); // 14
+        a(); // 15
+
+        b(); // 45
+    ```
+
+    Чтобы сделать счётчик, достаточно создать внутри него локальную переменную count, а возвращать из счётчика новую функцию, которая будет 
+    изменять и выводить в лог увеличенное число:
+
+        ```
+        function counter(variable) {
+            let count = variable;
+
+            return function() {
+                count++;
+                console.log(count);
+            }
+        }
+
+        const
+            a = counter(12),
+            b = counter(44);
+
+        a(); // 13
+        a(); // 14
+        a(); // 15
+
+        b(); // 45
+    ```
+
+    По сути, замыкание - это возвращаемая функция, которая "замыкается" на области видимости родительской функции.
+
+    Более подробно про замыкания можно прочитать "здесь
+    https://habr.com/ru/post/38642/
+    https://www.youtube.com/watch?v=RPuFz93Gvpk
+    https://medium.com/webbdev/js-2087d93ded24
+    https://habr.com/ru/company/nix/blog/460861/
+    https://www.sitepoint.com/function-expressions-vs-declarations/
+    https://learn.javascript.ru/closure
+    https://habr.com/ru/post/338462/
+    "
+
+    === call, apply, bind
+
+    Рассмотрим задачу с передачей контекста: 
+    есть объект с полями и есть функция, в которой идёт работа с переменными с точно такими же именами:
+
+    ```
+        const obj = {
+            a: 12,
+            b: 42, 
+            c: {
+                d: 64
+            }
+        };
+
+        function test() {
+            let d = this.a * this.b;
+            d += this.c.d;
+
+            console.log(d);
+        }
+    ```
+
+    Необходимо выполнить функцию test таким образом, чтобы this ссылался не на window, а на объект obj.
+    Для этого можно использовать специальные методы конструктора Function .call(), .apply(), .bind();
+
+    1) .call
+
+    ```
+        const obj = {
+            a: 12,
+            b: 42, 
+            c: {
+                d: 64
+            }
+        };
+
+        function test() {
+            this.d = this.a * this.b;
+            this.d += this.c.d;
+        }
+    ```
+
+    https://stackoverflow.com/questions/17606691/difference-between-iife-and-call
    
    - потеря контекста вызова
 
    https://ru.stackoverflow.com/questions/535030/%D0%9F%D0%BE%D1%82%D0%B5%D1%80%D1%8F-%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%BA%D1%81%D1%82%D0%B0-%D0%B2%D1%8B%D0%B7%D0%BE%D0%B2%D0%B0
 
 
+    Более подробно про сами "функции
     https://developer.mozilla.org/ru/docs/Web/JavaScript/Guide/Functions
-
+    https://codeburst.io/all-about-javascript-functions-in-1-article-49bfd94b31ab
+    https://css-tricks.com/javascript-scope-closures/
+    https://codeburst.io/javascript-functions-understanding-the-basics-207dbf42ed99
+    https://habr.com/ru/company/ruvds/blog/332020/%5bperevod%5d-javascript-mnogolikie-funktsii/
+    https://habr.com/ru/company/ruvds/blog/430382/
+    https://habr.com/ru/post/240349/
+    https://habr.com/ru/post/120193/
+    "
 */

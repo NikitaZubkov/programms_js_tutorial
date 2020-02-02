@@ -514,6 +514,8 @@
     https://habr.com/ru/post/462971/
     https://fullstackgeek.blogspot.com/2019/01/variables-scope-in-javascript.html
     https://tylermcginnis.com/var-let-const/
+    https://medium.com/@josephcardillo/the-difference-between-function-and-block-scope-in-javascript-4296b2322abe
+    http://jsraccoon.ru/es6-block-scoped-declarations
 
     === var, let, const и условия/циклы
 
