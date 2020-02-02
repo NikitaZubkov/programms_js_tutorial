@@ -569,18 +569,43 @@
             }
         };
 
-        function test() {
+        function test(variable1, variable2) {
             let d = this.a * this.b;
             d += this.c.d;
 
-            console.log(d);
+            console.log(d, variable1, variable2);
         }
     ```
 
     Необходимо выполнить функцию test таким образом, чтобы this ссылался не на window, а на объект obj.
     Для этого можно использовать специальные методы конструктора Function .call(), .apply(), .bind();
 
-    1) .call
+    1) .call()
+    
+    Этот метод позволяет вызвать функцию, передав в неё аргументы через запятую и новый контекст:
+        
+    ```
+        const obj = {
+            a: 12,
+            b: 42, 
+            c: {
+                d: 64
+            }
+        };
+
+        function test(variable1, variable2) {
+            let d = this.a * this.b;
+            d += this.c.d;
+
+            console.log(d, variable1, variable2);
+        }
+
+        test.call(obj, 12, 34);
+    ```
+
+    2) .apply()
+
+    Этот метод похож на .call(), он также вызывает функцию с новым контекстом, но аргументы передаются в массиве:
 
     ```
         const obj = {
@@ -591,17 +616,65 @@
             }
         };
 
-        function test() {
-            this.d = this.a * this.b;
-            this.d += this.c.d;
+        function test(variable1, variable2) {
+            let d = this.a * this.b;
+            d += this.c.d;
+
+            console.log(d, variable1, variable2);
         }
+
+        test.apply(obj, [12, 34]);
     ```
 
-    https://stackoverflow.com/questions/17606691/difference-between-iife-and-call
-   
-   - потеря контекста вызова
+    apply может быть полезен при работы со встроенными объектами, конструторами или сторонними библиотеками и API.
+    Например при поиске максимального числа в массиве:
 
-   https://ru.stackoverflow.com/questions/535030/%D0%9F%D0%BE%D1%82%D0%B5%D1%80%D1%8F-%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%BA%D1%81%D1%82%D0%B0-%D0%B2%D1%8B%D0%B7%D0%BE%D0%B2%D0%B0
+    ```
+        const numArray = [17, 4, 742, 13, 12, 20, 5, 333];
+        Math.max.apply(null, numArray); 
+    ```
+
+    3) .bind()
+
+    .call() и .apply() позволяют вызвать функцию с новым контекстом, однако если нужно сохранить функцию с новым контекстом и вызвать её 
+    в будущем, то тогда используется .bind():
+
+    ```
+        const obj = {
+            a: 12,
+            b: 42, 
+            c: {
+                d: 64
+            }
+        };
+
+        function test(variable1, variable2) {
+            let d = this.a * this.b;
+            d += this.c.d;
+
+            console.log(d, variable1, variable2);
+        }
+
+        const a = test.bind(obj, 12, 34);
+
+        a();
+    ```
+
+    .bind удобен в тех случаях, когда мы нужно передать callback функцию в качестве аргумента другой функции и потом вызвать.
+
+    Подробнее про "call, apply, bind
+    https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Function/call
+    https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Function/apply
+    https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Function/bind
+    https://medium.com/@stasonmars/%D0%BF%D0%BE%D0%B4%D1%80%D0%BE%D0%B1%D0%BD%D0%BE-%D0%BE-%D0%BC%D0%B5%D1%82%D0%BE%D0%B4%D0%B0%D1%85-apply-call-%D0%B8-bind-%D0%BD%D0%B5%D0%BE%D0%B1%D1%85%D0%BE%D0%B4%D0%B8%D0%BC%D1%8B%D1%85-%D0%BA%D0%B0%D0%B6%D0%B4%D0%BE%D0%BC%D1%83-javascript-%D1%80%D0%B0%D0%B7%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D1%87%D0%B8%D0%BA%D1%83-ddd5f9b06290
+    https://www.freecodecamp.org/news/how-to-use-the-apply-call-and-bind-methods-in-javascript-80a8e6096a90/
+    https://stackoverflow.com/questions/17606691/difference-between-iife-and-call
+    https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Math/max
+    "
+    
+    - потеря контекста вызова
+
+    https://ru.stackoverflow.com/questions/535030/%D0%9F%D0%BE%D1%82%D0%B5%D1%80%D1%8F-%D0%BA%D0%BE%D0%BD%D1%82%D0%B5%D0%BA%D1%81%D1%82%D0%B0-%D0%B2%D1%8B%D0%B7%D0%BE%D0%B2%D0%B0
 
 
     Более подробно про сами "функции
