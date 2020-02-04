@@ -757,7 +757,4 @@
     https://learn.javascript.ru/object#tsikl-for-in
     https://eslint.org/docs/rules/guard-for-in
     "
-
-    === !!!Базовые и основные методы при работе с объектами
-
  */

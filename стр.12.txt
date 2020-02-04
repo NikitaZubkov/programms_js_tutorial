@@ -1,4 +1,12 @@
 /**
-    ====== Создание, обработка ошибок ======
+    ====== Асинхронные операции, таймеры/интервалы, промиссы, асинхронные функции ======
+
+    === callback функция
+
+    Рассмотри следующую задачу: 
+
+    http://javascriptissexy.com/understand-javascript-callback-functions-and-use-them/
+    https://habr.com/ru/company/ruvds/blog/330880/
+    http://javascriptissexy.com/understand-javascript-callback-functions-and-use-them/
 
 */

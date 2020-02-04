@@ -166,6 +166,4 @@
     https://learn.javascript.ru/while-for#metki-dlya-break-continue
     https://puzzleweb.ru/javascript/11_loops3.php
     "
-
-
 */
