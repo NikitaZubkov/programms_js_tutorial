@@ -603,6 +603,30 @@
         test.call(obj, 12, 34);
     ```
 
+    Также call удобно использовать, если нужно преобразовать arguments в массив, а в проекте нельзя использовать ES6+, только ES5:
+
+    ```
+        function test(a, b) {
+            /**
+             * В конструкторе Array есть метод slice, который вырезает выбираемую часть исходного массива
+             * и возвращает её, при этом не затрагивая исходный массив
+             * В данном примере slice вызывается у Array и методу передаётся в качестве контекста arguments
+             * Если в slice не передать интервал, который нужно вырезать, то вернётся неизменённый массив
+             * А в случае с arguments идёт его преобразование в массив
+             */
+            const args = Array.prototype.slice.call(arguments);
+
+            console.log(args);
+        }
+
+        test(1, 2);
+    ```
+
+    Более подробно про этот пример "здесь
+    https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Array/slice
+    https://fooobar.com/questions/17592/how-does-arrayprototypeslicecall-work
+    "
+
     2) .apply()
 
     Этот метод похож на .call(), он также вызывает функцию с новым контекстом, но аргументы передаются в массиве:
@@ -661,6 +685,28 @@
     ```
 
     .bind удобен в тех случаях, когда мы нужно передать callback функцию в качестве аргумента другой функции и потом вызвать.
+    Т.к. bind является дополнением к ES6, то он может быть не добавлен в некоторые версии браузеров. Поэтому для него существует полифилл, 
+    который можно посмотреть на странице "Mozilla
+    https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Function/bind#Polyfill
+    "
+
+    Важное замечание про стрелочные функции и bind/call/apply: 
+    bind/call/apply бессмыслено применять к стрелочным функциям, т.к. у них нет this:
+
+    ```
+        const 
+            obj = {
+                a: 12
+            },
+            testFuncArrow = () => console.log(this.a);
+
+        function testFunc() {
+            console.log(this.a);
+        }
+
+        testFunc.call(obj);
+        testFuncArrow.call(obj);
+    ```
 
     Все эти методы крайне удобны в тех случаях, когда может возникнуть так называемая "потеря контекста вызова".
     Рассмотрим пример с потерей контекста:
@@ -701,6 +747,7 @@
     https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Function/apply
     https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Function/bind
     https://medium.com/@stasonmars/%D0%BF%D0%BE%D0%B4%D1%80%D0%BE%D0%B1%D0%BD%D0%BE-%D0%BE-%D0%BC%D0%B5%D1%82%D0%BE%D0%B4%D0%B0%D1%85-apply-call-%D0%B8-bind-%D0%BD%D0%B5%D0%BE%D0%B1%D1%85%D0%BE%D0%B4%D0%B8%D0%BC%D1%8B%D1%85-%D0%BA%D0%B0%D0%B6%D0%B4%D0%BE%D0%BC%D1%83-javascript-%D1%80%D0%B0%D0%B7%D1%80%D0%B0%D0%B1%D0%BE%D1%82%D1%87%D0%B8%D0%BA%D1%83-ddd5f9b06290
+    https://medium.com/@leonardobrunolima/javascript-tips-apply-vs-call-vs-bind-d738a9e8b4e1
     https://www.freecodecamp.org/news/how-to-use-the-apply-call-and-bind-methods-in-javascript-80a8e6096a90/
     https://stackoverflow.com/questions/17606691/difference-between-iife-and-call
     https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Math/max
