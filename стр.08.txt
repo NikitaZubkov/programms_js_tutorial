@@ -609,6 +609,9 @@
         console.log(newObj);
     ```
 
+    Четвёртый вариант - rest оператор
+    !!!
+
     Более подробно про изменчивость "объектов 
     https://2ality.com/2019/10/shared-mutable-state.html
     https://medium.com/@stasonmars/%D0%BA%D0%BE%D0%BF%D0%B8%D1%80%D0%BE%D0%B2%D0%B0%D0%BD%D0%B8%D0%B5-%D0%BE%D0%B1%D1%8A%D0%B5%D0%BA%D1%82%D0%BE%D0%B2-%D0%B2-javascript-d25c261a7aff
@@ -756,5 +759,55 @@
     Более подробно про "for...in
     https://learn.javascript.ru/object#tsikl-for-in
     https://eslint.org/docs/rules/guard-for-in
+    "
+
+    === !!!Символы
+
+    Рассмотрим задачу, когда нужно объединить два объекта в один. При этом нужно 
+
+    === Особенность порядка полей у объектов
+
+    Ранее мы рассматривали разные варианты перебора объектов и работу с JSON. Однако во всех примерах было одно допущение: все поля идут
+    в той последовательности, в которой они добавлены. При этом в JS (например переборе объекта) не гарантируется порядок свойств:
+
+    ```
+        const obj = {
+            'b': 13,
+            '1': 12,
+            'c': 14
+        }
+
+        for (let key in obj) {
+            if (Object.prototype.hasOwnProperty.call(obj, key)) {
+                console.log(key);
+            }
+        }
+    ```
+
+    Это происходит из-за внутренней оптимизации браузера, также об этом пишется в документации в ECMAscript. Аналогично при JSON.parse или 
+    JSON.stringify. 
+    Одним из вариантов решения данной проблемы является хранение ключей объекта в массиве:
+
+    ```
+        const 
+            obj = {
+                'b': 13,
+                '1': 12,
+                'c': 14
+            },
+            arr = ['b', '1', 'c'];
+
+        for (let key of arr) {
+            console.log(obj[key]);
+        }
+    ```
+
+    Другим более правильным вариантом является использование специального объекта Map, в котором сохраняется порядок добавленных полей.
+    Подробнее про него и другие специальные объекты в следующих главах.
+
+    Более подробно про это "здесь
+    https://www.ecma-international.org/ecma-262/10.0/index.html#sec-enumerate-object-properties
+    https://ru.stackoverflow.com/questions/520335/json-parse-%D0%BD%D0%B5-%D1%81%D0%BE%D1%85%D1%80%D0%B0%D0%BD%D1%8F%D0%B5%D1%82-%D0%BF%D0%BE%D1%80%D1%8F%D0%B4%D0%BE%D0%BA
+    http://wm-school.ru/js/js_object-for-in.php
     "
  */

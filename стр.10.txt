@@ -1,5 +1,5 @@
 /**
-    ====== Массивы, Map, Set ======
+    ====== Массивы ======
 
     === Перебор массивов
 
@@ -347,9 +347,54 @@
 
     9) fill 
 
-    !!!
-    
+    Рассмотрим задачу, когда нужно сгенерировать массив с заранее заполненными однотипными данными.
+    Это можно сделать простой генерацией массива и добавлением элементов через push в цикле:
+
+    ```
+        const 
+            arr = [],
+            sizeArr = 10;
+
+        for (let i = 0; i < sizeArr; i++) {
+            arr.push(null);
+        }
+
+        console.log(arr);
+    ```
+
+    Однако эту же операцию можно сделать через метод fill:
+
+    ```
+        // Создаём массив длиной 10 символов и заполняем их null
+        const arr = new Array(10).fill(null);
+    ```
+
+    Однако у этого метода есть недостаток: если нужно заполнять значения массива не примитивами, а например объектами, то они будут ссылками
+    на один и тот же объект:
+
+    ```
+        const arr = new Array(10).fill({});
+
+        arr[0].a = 12;
+
+        console.log(arr);
+    ```
+
+    Чтобы исправить это существует несколько вариантов, одним из которых является заполнение массива undefined, 
+    а после изменение элементов через map:
+
+    ```
+        const arr = new Array(10).fill().map(Object);
+
+        arr[0].a = 12;
+
+        console.log(arr);
+    ```
+
+    Более подробно про fill можно прочитать "здесь:
+    https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Array/fill
     https://stackoverflow.com/questions/35578478/array-prototype-fill-with-object-passes-reference-and-not-new-instance
+    "
 
     Разумеется это не все методы у массивов, более подробно про остальные методы, а также про перечисленные
     можно прочитать "здесь
@@ -360,8 +405,4 @@
     https://css-tricks.com/an-illustrated-and-musical-guide-to-map-reduce-and-filter-array-methods/
     https://habr.com/ru/company/ruvds/blog/430380/
     "
-
-    === Map, Set
-
-    https://webformyself.com/kak-proizvesti-udalenie-dublej-massiva-v-es6/
 */
